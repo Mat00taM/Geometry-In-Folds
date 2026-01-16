@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometry in Folds - Matheus Silva Sá</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        :root {
+            --primary-blue: #162d44; 
+            --gold-accent: #C5A059;  
+            --off-white: #FBFBFB;
+            --text-dark: #162d44;
+            --light-gray: #f4f4f4;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.8; 
+            color: var(--text-dark); 
+            background: linear-gradient(135deg, var(--off-white) 0%, #e8f4f8 100%);
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        .text-justify { text-align: justify; }
+
+        nav { 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem; 
+            z-index: 1000; 
+            box-shadow: 0 4px 20px var(--shadow); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-blue);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .nav-brand img {
+            height: 40px; 
+            transition: transform 0.3s ease;
+        }
+
+        .nav-brand img:hover {
+            transform: scale(1.1);
+        }
+
+        nav ul { 
+            display: flex; 
+            list-style: none; 
+            gap: 2rem; 
+        }
+        
+        nav a { 
+            text-decoration: none; 
+            color: var(--primary-blue); 
+            font-weight: 600; 
+            font-size: 0.95rem; 
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--gold-accent);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        nav a:hover {
+            color: var(--gold-accent);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary-blue);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .logo-container {
+            text-align: center;
+            padding: 10rem 1rem 2rem 1rem;
+            background: var(--primary-blue);
+            animation: fadeIn 1s ease-in;
+        }
+
+        .logo-container img {
+            width: 300px;
+            filter: drop-shadow(0 10px 20px var(--shadow));
+        }
+
+        .hero { 
+            background: var(--primary-blue); 
+            color: white; 
+            padding: 0rem 2rem 5rem; 
+            text-align: center; 
+            animation: slideUp 1s ease-out;
+        }
+
+        .hero h1 { 
+            font-size: 3.5rem; 
+            margin-bottom: 0.5rem; 
+            color: white; 
+            font-weight: 700;
+        }
+
+        .tagline { 
+            color: var(--gold-accent); 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 3px; 
+            font-size: 1rem; 
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: white;
+            opacity: 0.8;
+        }
+
+        section { 
+            padding: 5rem 2rem; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            position: relative; 
+            z-index: 1; 
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        h2 { 
+            color: var(--primary-blue); 
+            font-size: 2.5rem; 
+            margin-bottom: 2rem; 
+            border-left: 8px solid var(--gold-accent); 
+            padding-left: 20px; 
+            font-weight: 700;
+        }
+
+        h3 { 
+            color: var(--primary-blue); 
+            margin: 2.5rem 0 1.5rem; 
+            border-bottom: 2px solid rgba(22, 45, 68, 0.2); 
+            padding-bottom: 10px; 
+            font-size: 1.8rem;
+        }
+
+        .card-box { 
+            background: white; 
+            padding: 3rem; 
+            border-radius: 20px; 
+            margin-bottom: 3rem; 
+            border-left: 10px solid var(--primary-blue); 
+            box-shadow: 0 10px 30px var(--shadow); 
+            color: var(--text-dark);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow);
+        }
+
+        .card-box h4 { 
+            color: var(--primary-blue); 
+            font-size: 1.6rem; 
+            margin-bottom: 1.5rem; 
+            font-weight: 600;
+        }
+
+        .metodologia-card { 
+            border-left-color: var(--gold-accent) !important; 
+            background: linear-gradient(135deg, white 0%, var(--light-gray) 100%);
+        }
+
+        .image-box { 
+            margin: 2.5rem 0; 
+            text-align: center; 
+        }
+
+        .image-box img { 
+            max-width: 100%; 
+            border-radius: 15px; 
+            border: 2px solid #eee; 
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .caption { 
+            font-size: 0.9rem; 
+            color: #666; 
+            margin-top: 15px; 
+            font-style: italic; 
+        }
+
+        .list-style { 
+            margin-left: 40px; 
+            list-style-type: disc; 
+            margin-top: 15px; 
+        }
+
+        .list-style li { 
+            margin-bottom: 20px; 
+            padding-left: 10px;
+        }
+
+        .card-box p, .card-box li {
+            text-align: justify;
+        }
+
+        footer { 
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #0f1a2a 100%); 
+            color: white; 
+            padding: 5rem 2rem; 
+            text-align: center; 
+            position: relative;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer .tagline {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--gold-accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-blue);
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) { 
+            nav ul { display: none; }
+            .hamburger { display: flex; }
+            .hero h1 { font-size: 2.5rem; } 
+            .logo-container img { width: 250px; }
+            .logo-container { padding: 8rem 1rem 1rem; }
+            section { padding: 3rem 1rem; }
+            .card-box { padding: 2rem; }
+            h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-brand">
+            <img src="logo-fundo-transparente.png" alt="Logo">
+            <strong>Geometry In Folds</strong>
+        </div>
+        <ul>
+            <li><a href="#sobre">Biography</a></li>
+            <li><a href="#resumo">Abstract</a></li>
+            <li><a href="#intro">Introduction</a></li>
+            <li><a href="#problematica">Problem Statement</a></li>
+            <li><a href="#metodo">Methodology</a></li>
+            <li><a href="#conclusao">Conclusion</a></li>
+        </ul>
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+    <div class="logo-container">
+        <img src="Logo 2.png" alt="Logo Grande">
+    </div>
+
+    <header class="hero">
+        <p class="tagline">Paper as a bridge to knowledge</p>
+        <h1>Matheus Silva Sá</h1>
+        <p>Mechatronics Technician & Origami Inspired Robotics Developer</p>
+    </header>
+
+    <section id="sobre">
+        <h2>Biography</h2>
+        <div class="card-box">
+            <div style="display: flex; gap: 30px; flex-wrap: wrap; align-items: center;">
+                <div style="flex: 1; min-width: 300px;" class="text-justify">
+                    <p>Hello, my name is Matheus Silva Sá. I am 19 years old and I was born in Manaus, in the heart of the Brazilian Amazon. With a degree in Mechatronics from the Matias Machline Foundation, my journey is defined by the intersection of technological rigor and social sensitivity.</p><br>
+                    <p>My history with Origami began early, in the 3rd grade, when I folded my first paper swan. What started as childhood curiosity transformed over the years into a profound realization, paper is not just a disposable material, but a low-cost technological interface capable of democratizing knowledge.</p><br>
+                    <p>As a Mechatronics technician, I have developed a comprehensive understanding of how foldable structures drive innovations in medicine, aerospace engineering, and robotics. However, looking at the reality of public schools in my region, I noticed a gap, while technology advances, many young people still face 'spatial illiteracy' due to a lack of basic resources.</p><br>
+                    <p>Participating in the Learning Planet Youth Design Challenge is the decisive step toward turning this perception into action. My goal is to redesign educational processes using Origami as a tool for equity, giving voice and agency to vulnerable youth. I believe that when we combine technical skill with social purpose, we can fold the future and build a world where mathematical knowledge is tactile, accessible, and inspiring for everyone.</p><br>
+                </div>
+                <div style="flex: 0.5; min-width: 200px; text-align: center;">
+                    <img src="Foto/sua-foto.jpg" alt="Matheus Silva Sá" style="width: 100%; border-radius: 15px; border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="resumo">
+        <h2>Abstract</h2>
+        <div class="card-box text-justify">
+            <p>The Geometry in Folds project redefines mathematics education by transforming paper into a low-cost technological interface for constructing tangible geometric concepts. Grounded in the principles of Embodied Cognition and the classical methodologies of Friedrich Froebel and T. Sundara Row, the initiative empowers students and educators to convert theoretical abstractions into playful, sensory experiences. By utilizing origami to materialize shapes, angles, volumes, and fractions, the project combats 'math anxiety' and develops spatial reasoning. More than an artistic technique, the proposal offers highly replicable and sustainable educational materials, democratizing access to cutting-edge technical knowledge and promoting youth agency in contexts of social vulnerability.</p>
+        </div>
+    </section>
+
+ 
+    <section id="intro">
+        <h2>Introduction</h2>
+        <div class="card-box text-justify">
+            <p><a href="https://pt.wikipedia.org/wiki/Orig%C3%A2mi" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Origami</a>, the ancient Japanese art of paper folding oru (dobrar) e kami (papel) transcends mere artistic expression to historically establish itself as a rigorous method of intellectual development. In Japan, the practice evolved from ceremonial and religious use into a central educational tool. During the Meiji Period (1868-1912), the Japanese government formally recognized the technique as a fundamental discipline in primary education, understanding that the precision required by folding laid the foundation for logical thinking and mental discipline from childhood.</p>
+            <br> 
+            <p>This consolidation of origami as a school subject in the East found a scientific parallel in the West through <a href="https://pt.wikipedia.org/wiki/Friedrich_Fr%C3%B6bel" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Friedrich Froebel</a> (1782-1852). The German educator, creator of the <a href="https://pt.wikipedia.org/wiki/Jardim_de_inf%C3%A2ncia" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Kindergarten</a>, concept, was largely responsible for systematizing the educational potential of paper folding outside of Japan. Long before modern neuroscience, Froebel understood that working with one's hands is the foundation for abstract thought.</p>
+            <br>
+            <p>By introducing paper folding into his classrooms, Froebel did not seek the creation of mere ornaments, but rather the provision of 'educational toys' (the famous Froebel Gifts). For him, the physical transition from a flat sheet to a complex geometric form was the purest way for a child to explore the dialectical relationship between the part and the whole, transforming a cultural tradition into a pillar of modern pedagogy.</p>
+            <br>
+            <p>The principles of this methodology are:</p>
+            <br>
+            <ol style="margin-left: 20px; margin-top: 15px;">
+                <li style="margin-bottom: 20px;"><strong>Folds of Truth:</strong> The activities are based on the classic work <a href="https://en.wikipedia.org/wiki/Geometric_Exercises_in_Paper_Folding" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Geometric Exercises in Paper Folding</a>, by Indian mathematician T. Sundara Row. The method explores the pedagogical potential of folding for teaching elementary geometric operations and constructing regular polygons. By replacing the ruler and compass with precise creases, the work establishes a system where the physical manipulation of paper serves as concrete evidence for theorems and geometric properties.</li>
+                <P>Example: <a href="https://pt.wikipedia.org/wiki/Teorema_de_Pit%C3%A1goras" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Pythagorean Theorem</a></strong>
+                    <ul style="list-style-type: lower-alpha; margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Materials:</strong> Square sheet of paper, scissors.</li>
+                        <li><strong>Objective:</strong> Verify the Pythagorean Theorem through folding.</li>
+                    </ul>
+                    <br>
+                    <p>1.1. Consider the sheet as a square ABCD, with side a+b and width 20cm x 20cm.</p>
+                    <div class="image-box">
+                        <img src="Introdução/placeholder-imagalt=jpg.png" alt="Square ABCD">
+                        <div class="caption">Figure 1: Square ABCD</div>
+                    </div>
+                    <p>1.2. Perform the folds indicated below:</p>
+                    <br>
+                    <ul style="list-style-type: lower-alpha; margin-left: 20px; margin-top: 10px;">
+                        <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a1.jpg.png" alt="Passo a1">
+                                <div class="caption"></div>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a2.jpg.png" alt="Passo a2">
+                                <div class="caption"></div>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a3.jpg.png" alt="Passo a3">
+                                <div class="caption"></div>
+                            </div>
+                            </li>
+                                                <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a4.jpg.png" alt="Passo a4">
+                                <div class="caption"></div>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a5.jpg.png" alt="Passo a5">
+                                <div class="caption"></div>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a6.jpg.png" alt="Passo a6">
+                                <div class="caption"></div>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a7.jpg.png" alt="Passo a7">
+                                <div class="caption"></div>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a8.jpg.png" alt="Passo a8">
+                                <div class="caption"></div>
+                            </div>
+                        </li>
+                        <li style="margin-bottom: 20px;">
+                            <div class="image-box">
+                                <img src="Introdução/placeholder-image-a9.jpg.png" alt="Resultado">
+                                <div class="caption">Result</div>
+                            </div>
+                        </li>
+                    </ul>
+                    <br>
+                    <p>The congruence of the peripheral right triangles establishes the equality of their corresponding angles. At each vertex of the inner quadrilateral, the adjacency of angles ∝ and β allows us to deduce the measurement of the third angle:</p>
+                    <br> 
+                    <p>
+                        <p>a. Sum in the triangle: ∝ + β + 90° = 180° → ∝ + β = 90°.</p>
+                        <p>b. Sum at the vertex: ∝ + β + θ = 180°, where θ is the angle of the quadrilateral.</p>
+                       <p>c. Conclusion: Substituting the first equation into the second, we obtain θ = 90°.</p>
+                    <br> 
+                    <p>
+                       <p>Due to the symmetry of the construction, the quadrilateral possesses four right angles, characterizing it as a square.</p>
+                    <br>
+                    <p>When analyzing the figure below, we observe the projection of the legs a and b, which define the dimensions of the smaller squares. This spatial arrangement allows us to visualize how the linear measures of the sides of the right triangle expand to form the hatched areas, serving as a basis for understanding the Pythagorean relationship.</p>
+                    <br>
+                    <div class="image-box">
+                        <img src="Introdução/placeholder-image-beauty.jpg.png.png" alt="Análise da figura">
+                        <div class="caption">Final Figure: Analysis of the Pythagorean relationship</div>
+                    </div>
+                    <br>
+                        <p>Therefore, the analysis of the cut areas confirms the validity of the Pythagorean Theorem. Considering that the hatched areas sum to a² + b² and that the rearrangement of the right triangles delimits a central area equivalent to c², the overlapping and conservation of surfaces demonstrate the fundamental relationship c² = a² + b².</p></li>
+                    <br>
+                        <li style="margin-bottom: 20px;"><strong>Folds of Life:</strong> The Folds of Life represent the second stage of Froebel's methodology. In this phase, the student sets aside pure abstraction to represent objects from the everyday world, such as birds, flowers, and boats. The goal is not only craftsmanship but also the refinement of motor coordination and spatial perception. By reproducing forms from nature and culture through paper, the student develops the ability to synthesize and prepares for the more advanced stage: the expression of authorial creativity.</p>
+                    <br>
+                    <p>Examples: Origami swan</p>
+                    <div class="image-box">
+                        <img src="Introdução/placeholder-image-cisne.jpg.png" alt="Origami Cisne">
+                        <div class="caption">Example: Origami Swan</div>
+                    </div>
+                    <br>
+                    <strong>Geometric Analysis of the Swan</strong></p>
+                    <br>
+                    <p>a. Axial Symmetry and Angle Bisectors (Steps 1 and 2)</p>
+                    <br>
+                    <p>The starting point is a square (regular polygon).</p>
+                    <br>
+                     <ul style="margin-left: 20px;">
+                        <li>The Central Fold: By folding the paper in half diagonally, you establish the axis of symmetry of the figure.</li>
+                        <li>Angle Bisectors: In step 2, when folding the ends to the center, you are technically constructing the angle bisector of the right angles of the square. This divides the 90° angle into two 45° angles and, subsequently, into smaller fractions, creating congruent scalene right triangles.</li>
+                    <br> 
+                    </ul>
+                    <p>b. Similarity of Triangles and Proportion (Steps 3 and 4)</p>
+                    <br>
+                    <p>By repeating the fold in step 4 (folding the ends inward again), you are working with proportions:</p>
+                    <br>
+                   <ul style="margin-left: 20px;">
+                       <li>The area of the paper is preserved, but its layer density increases.</li>
+                       <li>Mathematically, you are creating triangles that maintain the same shape (are similar), but at reduced scales. This process of "thinning" the structure is what allows the paper to gain the necessary strength to support the "neck" of the swan.</li>
+                    <br>
+                    </ul>
+                    <p>c. Angles and Spatial Geometry (Steps 5 to 8)</p>
+                    <br>
+                   <ul style="margin-left: 20px;">
+                       <li>Valley and Mountain Folds: Here you transition from flat geometry to three-dimensional.</li>
+                       <li>The Neck (Supplementary Angles): In steps 7 and 8, when folding the model in half and pulling the neck, you use the concept of supplementary angles. The tilt of the neck in relation to the body determines the aesthetic and physical balance of the piece (center of gravity).</li>
+                   <br>
+                    </ul>
+                </li>
+                 <li style="margin-bottom: 20px;"><strong>Folds of Beauty:</strong>The author emphasizes that learning was not limited to the square sheet of paper. The introduction of triangles, hexagons, and octagons expanded the geometric repertoire, challenging perceptions of internal angles and how different geometric shapes behave under pressure and folding. For Froebel, "beauty" was intrinsically linked to symmetry. By folding the paper in such a way that changes on one side were replicated on all others, the child learned that visual harmony is the result of mathematical laws and balance.</p>
+                    <br>
+                    <p>Different from following a fixed diagram to create an animal, the student started from a simple geometric base (such as the "Cabinet Base" or the "Mill Base") and applied small systematic changes to each corner or flap. The goal was to discover how many different variants could arise from a single initial structure.</p>
+                    <br>
+                    <p>The fact that children collected their productions in albums demonstrates that, for Froebel, the process was as important as the product. These records served as a "portfolio of innovation," where the child could visualize their creative evolution — a practice that is now valued as pedagogical documentation.</p>
+                    <br>
+                </li>
+            </ol>
+            <br>
+            <div class="image-box">
+                <img src="Introdução/placeholder-image-beauty.jpg.png" alt="Dobras de Beleza">
+                <div class="caption">Example: Beauty Folds</div>
+            </div>
+        </div>
+ </section>
+               
+    </section>
+        
+    <section id="problematica">
+    <h2>Problem Statement</h2>
+    <div class="card-box text-justify">
+        <p>Mathematics education in Brazil, specifically in the context of public schools in the Amazon, faces a challenge that transcends the lack of physical infrastructure: spatial illiteracy. <a href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/pisa" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Data from PISA and national assessments (IDEB)</a> reveal that most students finish basic education with severe difficulties in visualizing and manipulating geometric concepts in the three-dimensional world. </p>
+        <br>
+        <p>The problem lies in an epistemological gap. Traditional geometry teaching is often reduced to abstract formulas and static drawings on blackboards. This "verbalist" model ignores the principles of Embodied Cognition — the theory that deep learning and mathematical conceptualization occur through motor and sensory interaction with the object of study. As argued by authors such as <a href="https://en.wikipedia.org/wiki/Jean_Piaget" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Jean Piaget</a> and <a href="https://en.wikipedia.org/wiki/Seymour_Papert" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Seymour Papert</a>, knowledge is constructed more effectively when the individual "pinks with their hands."</p>
+        <br>
+        <p>In the outskirts of Manaus, where access to computer labs is scarce, geometry becomes a foreign and intimidating language. This disconnection generates "math anxiety," a psychological barrier that drives young talent away from <a href="https://en.wikipedia.org/wiki/Science,_technology,_engineering,_and_mathematics" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">STEM (Science, Technology, Engineering, and Mathematics)</a> fields. The main factors contributing to these didactic barriers are:</p>
+        <br>
+        <ul style="margin-left: 20px;">
+            <li>Lack of Basic Tools: Without compasses or manipulable materials, concepts like symmetry and volume become empty rules to memorize.</li>
+            <li>Inequality of Opportunities: While elite schools use modeling software, public school students face a "static" education, undermining their intellectual confidence.</li>
+            <li>Disconnection from Reality: Young people do not realize that the logic of a triangle is the same that supports a bridge or a satellite.</li>
+        <br>
+        </ul>
+        <p><strong>Solution:</strong></p>
+        <br>
+        <p>In light of the precarious situation, origami emerges as a low-cost solution with high intellectual complexity. By combining paper with the methodology of Friedrich Froebel and the studies of T. Sundara Row, the project proposes:</p>
+        <br>
+        <ul style="margin-left: 20px;">
+            <li>Tangibilization of the Abstract: Transforming theorems into physical objects, facilitating the understanding of students with learning difficulties.</li>
+            <li>Training of Multipliers: Training teachers to use recyclable materials as high-impact didactic tools.</li>
+            <li>Tactile Empowerment: Awakening youth protagonism through an activity that unites traditional art and modern engineering (such as space solar panels and medical stents).</li><br>
+        </ul>
+        <p><strong>Objectives and Impact:</strong></p>
+        <br>
+        <ul style="margin-left: 20px;">
+            <li>Reduce "math anxiety" through creative making.</li>
+            <li>Develop three-dimensional visualization, an essential skill for future careers.</li>
+            <li>Promote sustainability by using discarded paper as educational raw material.</li>
+            <li>Scalability: Create a digital didactic guide (PDF/VVideo) replicable in any context of global social vulnerability.</li>
+        </ul>
+    </div>
+</section>
+<section id="metodo">
+    <h2>Methodology</h2>
+    <div class="card-box">
+
+        <h4>Step 1: Training and Multiplication Workshops</h4>
+        <p>To ensure the scalability of the project, we will adopt the "Facilitator Training" model, based on the idea that the teacher should be the mediator between the physical material and the logical concept.</p>
+        <br>
+        <ol style="list-style-type: lower-alpha; margin-left: 20px;">
+            <li>
+                <P>Teacher Training with Scientific Curation: Teachers will not only be trained in the aesthetics of origami, but also in the application of the Mathematics of Origami. The training will be guided by high-level bibliographic references, allowing the teacher to explore:</P>
+                <ul style="list-style-type: disc; margin-left: 20px; margin-top: 10px;">
+                    <li>Geometric Constructions: Using the axioms of <a href="https://en.wikipedia.org/wiki/Robert_J._Lang" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Robert J. Lang</a> and <a href="https://share.google/1VdCra7fMDxKaQVDC" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Hisashi Abe</a>, we will teach how paper can replace the ruler and compass to solve complex problems in Euclidean geometry.</li>
+                    <li>Pedagogical Exploration: Through the works of <a href="https://share.google/Uw9VZVvEmiPioevKu" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Eduardo Cavacami</a> and <a href="http://www.dm.ufscar.br/~yolanda/origami/origami2008.pdf" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Yolanda Furuya</a>, teachers will learn methodologies tested in workshops by SBM (Brazilian Society of Mathematics) to introduce cuts and folds as teaching tools in the public network.</li>
+                    <li>Geometry of Polyhedra: The study of Platonic Polyhedra, based on the research of Nelma Pedone, will empower teachers to teach volume and spatiality in a modular and tactile way.</li>
+                </ul>
+            </li>
+            <br>
+            <li>
+                <p>Low-Cost, High-Tech Laboratory (Support Resources): The professor will receive the Facilitator's Teaching Guide, which compiles the studies of <a href="https://share.google/Hx2mpIO1eE7q7JaOa" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Thomas Hull</a> on the mathematics of origami and the golden ratios in three-dimensional solids by <a href="https://share.google/9C7q4gTWdJ1p1r5Rs" target="_blank" style="color: var(--primary-blue); font-weight: bold; text-decoration: underline;">Ron Knott</a>.</p>
+                <ul style="list-style-type: disc; margin-left: 20px; margin-top: 10px;">
+                    <li>The goal is for the teacher — regardless of their prior experience — to transform a sheet of paper into an object of scientific study. The teacher ceases to be an art instructor and becomes a facilitator of resilient educational technologies, capable of connecting the classroom to the logic that governs everything from nature (Fibonacci) to space engineering.</li>
+                </ul>
+                <br>
+            </li>
+        </ol>
+
+        <h4>Step 2: From Plan to Volume</h4>
+        <p>In this phase, students follow Froebel's logical progression: from line (crease) to surface (plane) and from surface to solid (volume).</p>
+
+        <ol style="list-style-type: lower-alpha; margin-left: 20px;">
+            <li>
+                <strong>Paper Geometry, Inspired by T. Sundara Row:</strong>
+                <ul style="list-style-type: disc; margin-left: 20px; margin-top: 10px;">
+                    <li>Angles and Symmetry: Instead of just measuring with a protractor, the student creates angles through folds, understanding that the bisection of an angle is the perfect overlap of two lines.</li>
+                    <li>Visual Fractions and Folding Arithmetic: The physical division of paper allows the student to "touch" the fraction, understanding that ¼ is an area generated by two perpendicular folds.</li>
+                <br>
+                </ul>
+            </li>
+        </ol>
+
+        <h4>Step 3: Application, Assessment, and Social Impact</h4>
+        <br>
+        <p>The final phase focuses on transposing knowledge to real life, transforming the student from a spectator into a creator.</p>
+        <br>
+        <ol style="list-style-type: lower-alpha; margin-left: 20px;">
+            <li>Froebel's "Creative Work": Students are challenged to create design solutions and artistic structures based on origami. This connects the classroom to the practical application of geometry, where the paper serves as a bridge between abstract thought and material creation.</li>
+            <br>
+            <li>Success Indicators: Beyond grades, we will measure impact through "Creative Confidence." Success is defined when a student in a vulnerable situation realizes they can master complex logical systems and express their own ideas using only their hands and the power of reasoning.</li>
+            <br>
+        </ol>
+        <br>
+        <h4>How do the materials of <strong>Froebel</strong> and <strong>Row</strong> contribute to teachers?</h4>
+        <ul style="list-style-type: disc; margin-left: 20px; margin-top: 10px;">
+            <li>Low Cost, High Complexity: Teachers learn that they don't need expensive labs to teach advanced geometry.</li>
+            <li>Didactic Autonomy: By mastering the techniques of T. Sundara Row, the teacher gains a powerful tool to explain concepts that were previously purely abstract.</li>
+            <li>Rescue of Playfulness: Froebel taught that learning should be enjoyable. Teachers are trained to create an environment where mistakes (such as an incorrect fold) are part of the discovery process, rather than an academic failure.</li>
+        </ul>
+    </div>
+</section>
+<section id="conclusao">
+    <h2>Conclusion</h2>
+    <div class="card-box text-justify">
+        <p>In short, <strong>Geometry in Folds</strong> project demonstrates that overcoming spatial illiteracy does not depend on costly technologies, but on the reframing of accessible materials in the light of classical methodologies. Origami, from the perspective of Froebel's methodology, ceases to be an artistic ornament and becomes an interface for constructing scientific thought. The success of this initiative lies in the ability to transform 'manual doing' into 'complex thinking,' proving that paper is an inexhaustible resource for education.</p>
+        <br>
+        <p>Therefore, to consolidate these advancements and expand the project's social reach, it is imperative that I, as a future academic, promote the implementation of this methodology within the university environment. Through the creation of extension centers in technological education, I intend to train new undergraduates and public school teachers in the use of origami as a tool for engineering and mathematics didactics. This action will be carried out through the distribution of the 'Facilitator's Didactic Guide' and the execution of practical workshops, with the aim of fostering a network of multipliers who bring the science of folding to communities in situations of vulnerability. In this way, it will be possible to convert childhood intuition into an educational policy of equity, ensuring that knowledge, like paper, is always within the reach of those who wish to build the future.</p>
+        <br>   
+    </div>
+    </section>
+<footer class="footer-final">
+    <div class="footer-container">
+        <div class="footer-top-row">
+            <div class="footer-info-text">
+                <strong>Geometry in Folds</strong> 
+                <span class="divider">|</span> 
+                <a href="mailto:samatheus296@gmail.com">samatheus296@gmail.com</a>
+                <span class="divider">|</span> 
+                <span>Manaus, Amazonas, Brasil</span>
+            </div>
+            
+            <div class="footer-social-box">
+                <a href="https://www.linkedin.com/in/matheus-s%C3%A1-90026934a/" target="_blank">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="footer-bottom-row">
+            <p class="gold-brand">Learning Planet Challenge 2026</p>
+            <p class="copy-text">&copy; Geometry In Folds: Paper as a bridge to knowledge.</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+
+.footer-final {
+    background-color: #162d44; 
+    width: 100%;
+    padding: 20px 0;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    margin-top: 50px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px;
+}
+
+.footer-info-text {
+    font-size: 13px; 
+    color: #e0e0e0;
+}
+
+.footer-info-text a {
+    color: #e0e0e0;
+    text-decoration: none;
+}
+
+.divider {
+    margin: 0 10px;
+    color: #C5A059;
+}
+
+.footer-social-box i {
+    font-size: 20px;
+    color: white;
+    transition: 0.3s;
+}
+
+.footer-social-box i:hover {
+    color: #C5A059;
+}
+
+.footer-bottom-row {
+    text-align: center;
+    padding-top: 15px;
+}
+
+.gold-brand {
+    color: #C5A059; 
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.copy-text {
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+body { margin: 0; }
+</style>
